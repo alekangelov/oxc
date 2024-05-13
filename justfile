@@ -135,6 +135,9 @@ new-react-perf-rule name:
 
 new-n-rule name:
     cargo run -p rulegen {{name}} n
+  
+new-solid-rule name:
+    cargo run -p rulegen {{name}} solid
 
 # Upgrade all Rust dependencies
 upgrade:

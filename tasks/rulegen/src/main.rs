@@ -56,6 +56,9 @@ const NODE_TEST_PATH: &str =
 const TREE_SHAKING_PATH: &str =
     "https://raw.githubusercontent.com/lukastaegert/eslint-plugin-tree-shaking/master/src/rules";
 
+const SOLID_TEST_PATH: &str =
+    "https://raw.githubusercontent.com/solidjs-community/eslint-plugin-solid/main/test/rules";
+
 struct TestCase<'a> {
     source_text: String,
     code: Option<String>,
@@ -360,6 +363,7 @@ impl<'a> Visit<'a> for State<'a> {
     fn visit_statement(&mut self, stmt: &Statement<'a>) {
         match stmt {
             Statement::ExpressionStatement(expr_stmt) => self.visit_expression_statement(expr_stmt),
+
             // for eslint-plugin-jsdoc
             Statement::ExportDefaultDeclaration(export_decl) => {
                 if let ExportDefaultDeclarationKind::ObjectExpression(obj_expr) =
@@ -368,6 +372,10 @@ impl<'a> Visit<'a> for State<'a> {
                     self.visit_object_expression(obj_expr);
                 }
             }
+            Statement::ExportNamedDeclaration(export_decl) => {
+                self.visit_export_named_declaration(export_decl)
+            }
+
             _ => {}
         }
     }
@@ -521,6 +529,7 @@ pub enum RuleKind {
     JSDoc,
     Node,
     TreeShaking,
+    Solid,
 }
 
 impl RuleKind {
@@ -538,6 +547,7 @@ impl RuleKind {
             "jsdoc" => Self::JSDoc,
             "n" => Self::Node,
             "tree-shaking" => Self::TreeShaking,
+            "solid" => Self::Solid,
             _ => Self::ESLint,
         }
     }
@@ -559,6 +569,7 @@ impl Display for RuleKind {
             Self::JSDoc => write!(f, "eslint-plugin-jsdoc"),
             Self::Node => write!(f, "eslint-plugin-n"),
             Self::TreeShaking => write!(f, "eslint-plugin-tree-shaking"),
+            Self::Solid => write!(f, "eslint-plugin-solid"),
         }
     }
 }
@@ -585,6 +596,7 @@ fn main() {
         RuleKind::JSDoc => format!("{JSDOC_TEST_PATH}/{camel_rule_name}.js"),
         RuleKind::Node => format!("{NODE_TEST_PATH}/{kebab_rule_name}.js"),
         RuleKind::TreeShaking => format!("{TREE_SHAKING_PATH}/{kebab_rule_name}.test.ts"),
+        RuleKind::Solid => format!("{SOLID_TEST_PATH}/{kebab_rule_name}.test.ts"),
         RuleKind::Oxc | RuleKind::DeepScan => String::new(),
     };
 

@@ -385,6 +385,10 @@ mod tree_shaking {
     pub mod no_side_effects_in_initialization;
 }
 
+mod solid {
+    pub mod components_return_once;
+}
+
 oxc_macros::declare_all_lint_rules! {
     deepscan::bad_array_method_on_arguments,
     deepscan::bad_bitwise_operator,
@@ -725,4 +729,5 @@ oxc_macros::declare_all_lint_rules! {
     jsdoc::require_property_description,
     jsdoc::require_yields,
     tree_shaking::no_side_effects_in_initialization,
+    solid::components_return_once,
 }
